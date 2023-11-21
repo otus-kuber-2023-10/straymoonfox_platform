@@ -6,6 +6,7 @@ RUN  mkdir /app/
 RUN chown -R nginx:nginx /app
 RUN chmod -R 755 /app
 ADD homework.html app/homework.html
+ADD homework.html app/index.html
 ADD nginx.conf /etc/nginx/nginx.conf
 RUN usermod -u 1001 nginx && groupmod -g 1001 nginx
 EXPOSE 8000
