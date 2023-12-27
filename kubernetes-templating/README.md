@@ -51,48 +51,50 @@
  - Задание со * Описание Helmfile
   1. Описан helmfile.yaml  для развертки ingress-nginx cert-manager и harbor
 
-    - Создание Helmchart
+   - Создание Helmchart
 
-    1. helm create hipster-shop
-    2. из содержимого файла https://github.com/express42/otus-platform-snippets/blob/master/Module-04/05-Templating/manifests/all-hipster-shop.yaml 
-    создаем чарты hipster-shop и frontend
-    3. добавляем frontend как зависимость для чарта hipster-shop, для этого прописываем в файл ./hipster-shop/Chart.yaml следующие строки:
-    ```
-    dependencies:
-    - name: frontend
-        version: 0.1.0
-        repository: "file://../frontend"
-    ```
+   1. helm create hipster-shop
+   2. из содержимого файла https://github.com/express42/otus-platform-snippets/blob/master/Module-04/05-Templating/manifests/all-hipster-shop.yaml 
+   создаем чарты hipster-shop и frontend
+   3. добавляем frontend как зависимость для чарта hipster-shop, для этого прописываем в файл ./hipster-shop/Chart.yaml следующие строки:
+   ```
+   dependencies:
+   - name: frontend
+       version: 0.1.0
+       repository: "file://../frontend"
+   ```
 
-    3. Создаем secret 
-    ```
-    gpg --full-generate-key
-    sops -e -i --pgp E54C4BAA7C691A24BF08F5CA3B017C11386E6D14 secrets.yaml
-    ```
+   3. Создаем secret 
+   ```
+   gpg --full-generate-key
+   sops -e -i --pgp E54C4BAA7C691A24BF08F5CA3B017C11386E6D14 secrets.yaml
+   ```
 
-    4. Обновляем зависимости  
-    ```helm dep update kubernetes-templating/hipster-shop```
-    5. Деплоим чарт hipster-shop, автоматически задеплоится чарт frontend
-    ```helm install hipster-shop hipster-shop --namespace=hipster-shop --create-namespace```
+   4. Обновляем зависимости  
+   ```helm dep update kubernetes-templating/hipster-shop```
+   5. Деплоим чарт hipster-shop, автоматически задеплоится чарт frontend
+   ```helm install hipster-shop hipster-shop --namespace=hipster-shop --create-namespace```
 
-    Результат:
-    ![hipster-shop](image-4.png)
-    ![hipster-shop2](image-5.png)
+   Результат:
+   ![hipstershop](image-4.png)
+   ![hipstershop2](image-5.png)
 
-    6. меняем NodePort с помощью ключа --set не меняя его в values.yaml  
-    ```helm upgrade hipster-shop hipster-shop --namespace=hipster-shop --set frontend.service.NodePort=31234```
+   6. меняем NodePort с помощью ключа --set не меняя его в values.yaml  
+   ```
+   helm upgrade hipster-shop hipster-shop --namespace=hipster-shop --set frontend.service.NodePort=31234
+   ```
     
-    Результат:
-    ![hipster-shop3](image-6.png)
+   Результат:
+   ![hipster-shop3](image-6.png)
 
-    - задание со * добавить в зависимости redis, чтобы он деплоился вместе с релизом hipster-shop
+   - задание со * добавить в зависимости redis, чтобы он деплоился вместе с релизом hipster-shop
 
-    1. добавляем в Chart.yml в раздел dependencies строки:
-    ```
-    - name: redis
-        version: latest
-        repository: https://charts.bitnami.com/bitnami
-    ```
+   1. добавляем в Chart.yml в раздел dependencies строки:
+   ```
+   - name: redis
+       version: latest
+       repository: https://charts.bitnami.com/bitnami
+   ```
    
    - kubecfg
    1. выносим service и deployment от сервисов paymentservice и shippingservice в папку kubernetes-templating/kubecfg
@@ -105,7 +107,7 @@
 ![kubecfg](image-7.png)
 ![kubecfg2](image-8.png)
    
-   - 
+   - kustomize
     1. выносим сервис cartservice в отдельную директорию kustomize/cartservice 
     2. Описываем файл kustomize/cartservice/kustomization.yaml
     3. Необходимо чтобы деплой сервиса происходил по команде 
